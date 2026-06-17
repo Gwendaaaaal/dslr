@@ -6,12 +6,16 @@ def list_sum(L: list[float]) -> float:
         res += float(i)
     return res
 
+def list_mean(L: list[float]) -> float:
+    mean = 0.0
+    for elem in L:
+        mean += elem
+    mean /= len(L)
+    return (mean)
+
 def list_std(L: list[float], mean: float | None = None) -> float:
     if mean is None :
-        mean = 0.0
-        for elem in L:
-            mean += elem
-        mean /= len(L)
+        mean = list_mean(L)
     res = 0
     for i in L :
         res += (i - mean) ** 2
@@ -29,3 +33,12 @@ def median(sorted_list: list[float]) -> float:
 
 def third_quartile(sorted_list: list[float]) -> float:
     return sorted_list[round(len(sorted_list) * 3 / 4)]
+
+def min_idx(L: list[float]) -> int:
+    min = L[0]
+    id = 0
+    for idx, elem in enumerate(L):
+        if elem < min:
+            min = elem
+            id = idx
+    return id
