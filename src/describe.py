@@ -1,7 +1,7 @@
 import csv
 from pathlib import Path
 
-from src.lib import first_quartile, list_std, list_sum, median, third_quartile
+from lib import first_quartile, list_std, list_sum, median, third_quartile
 
 PROJECT_ROOT = Path(__file__).resolve().parents[1]
 DATASET_PATH = PROJECT_ROOT / "datasets" / "dataset_train.csv"
