@@ -7,6 +7,8 @@ def list_sum(L: list[float]) -> float:
     return res
 
 def list_mean(L: list[float]) -> float:
+    if L is None or len(L) == 0:
+        return 0.0
     mean = 0.0
     for elem in L:
         mean += elem
@@ -14,7 +16,7 @@ def list_mean(L: list[float]) -> float:
     return (mean)
 
 def list_std(L: list[float], mean: float | None = None) -> float:
-    if mean is None :
+    if mean is None or mean == 0:
         mean = list_mean(L)
     res = 0
     for i in L :
