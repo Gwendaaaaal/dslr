@@ -1,8 +1,9 @@
-import csv
 import argparse
+import csv
 from pathlib import Path
 
 from lib import first_quartile, list_std, list_sum, median, third_quartile
+
 
 def describe(filename: str | Path) -> None:
     classes = {
@@ -74,6 +75,7 @@ def describe(filename: str | Path) -> None:
             print(formatted.ljust(COL_W), end="")
 
     print("")
+
 
 def main() -> None:
     parser = argparse.ArgumentParser(

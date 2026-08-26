@@ -1,8 +1,11 @@
-import csv
 import argparse
+import csv
 from pathlib import Path
-from lib import list_std, list_mean, min_idx
+
 import matplotlib.pyplot as plt
+
+from lib import list_mean, list_std, min_idx
+
 
 def histogram(filename: str | Path) -> None:
     classes = {
@@ -21,23 +24,33 @@ def histogram(filename: str | Path) -> None:
         "Flying": 12,
     }
 
-    houses = {"Gryffindor" : "firebrick", "Slytherin" : "green", "Ravenclaw" : "royalblue", "Hufflepuff" : "gold"}
+    houses = {
+        "Gryffindor": "firebrick",
+        "Slytherin": "green",
+        "Ravenclaw": "royalblue",
+        "Hufflepuff": "gold",
+    }
 
-    grades = [{"Gryffindor": [], "Slytherin": [], "Ravenclaw": [], "Hufflepuff": []} for _ in classes]
+    grades = [
+        {"Gryffindor": [], "Slytherin": [], "Ravenclaw": [], "Hufflepuff": []}
+        for _ in classes
+    ]
 
     with open(filename, "r") as file:
         data = csv.DictReader(file)
         for row in data:
             for classe in classes:
                 if row[classe]:
-                    grades[classes[classe]][row["Hogwarts House"]].append(float(row[classe]))
+                    grades[classes[classe]][row["Hogwarts House"]].append(
+                        float(row[classe])
+                    )
 
     fig, axes = plt.subplots(4, 4, figsize=(16, 12))
 
     std_of_mean_by_houses = [0.0] * len(classes)
 
     for classe in classes:
-        mean_of_houses = [ ]
+        mean_of_houses = []
         for house in houses:
             mean_of_houses.append(list_mean(grades[classes[classe]][house]))
         std_of_mean_by_houses[classes[classe]] = list_std(mean_of_houses)
@@ -49,7 +62,7 @@ def histogram(filename: str | Path) -> None:
                 bins=20,
                 alpha=0.5,
                 label=house,
-                color=houses[house]
+                color=houses[house],
             )
         if index == min_idx(std_of_mean_by_houses):
             ax.set_facecolor("#fff3cd")  # fond jaune clair
@@ -63,9 +76,9 @@ def histogram(filename: str | Path) -> None:
         if classe == "Flying":
             ax.legend()
 
-
     plt.tight_layout()
     plt.show()
+
 
 def main() -> None:
     parser = argparse.ArgumentParser(
