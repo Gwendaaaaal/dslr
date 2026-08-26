@@ -1,5 +1,8 @@
+import csv
 import argparse
 from pathlib import Path
+from numpy import nan
+from lib import list_std, list_mean, min_idx
 import matplotlib.pyplot as plt
 
 def logreg_train(filename: str | Path) -> None:
@@ -18,12 +21,38 @@ def logreg_train(filename: str | Path) -> None:
     #         Transfiguration, Potions, Charms, Flying, Astronomy)
     #     y = the "Hogwarts House" column (the labels)
 
-    # ============================================================
-    # STEP 2: HANDLE MISSING VALUES
-    # ============================================================
-    # - Check for NaN values in your selected feature columns
-    # - Decide a strategy: drop rows, or fill NaN with the column mean
-    #   (filling with mean is usually safer so you don't lose training rows)
+    classes = {
+        "Astronomy": 0,
+        "Herbology": 1,
+        "Defense Against the Dark Arts": 2,
+        "Divination": 3,
+        "Ancient Runes": 4,
+        "History of Magic": 5,
+        "Transfiguration": 6,
+        "Potions": 7,
+        "Charms": 8,
+        "Flying": 9,
+    }
+
+    houses = {"Gryffindor", "Slytherin", "Ravenclaw", "Hufflepuff"}
+
+    # 1 array / house / class 
+    grades = [ {
+        "Gryffindor": [],
+        "Slytherin": [],
+        "Ravenclaw": [],
+        "Hufflepuff": []
+    } for _ in classes]
+
+    with open(filename, "r") as file:
+        data = csv.DictReader(file)
+        for row in data:
+            house = row["Hogwarts House"]
+            if house not in houses: #if house not defined in row
+                continue
+            for classe, idx in classes.items():
+                value = row[classe]
+                grades[idx][house].append(float(value) if value else nan) # adds numpy.nan when no value
 
     # ============================================================
     # STEP 3: NORMALIZE / STANDARDIZE FEATURES
