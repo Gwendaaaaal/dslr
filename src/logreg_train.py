@@ -1,9 +1,12 @@
-import csv
 import argparse
+import csv
 from pathlib import Path
-from numpy import nan
-from lib import list_std, list_mean, min_idx
+
 import matplotlib.pyplot as plt
+from numpy import nan
+
+from lib import list_mean, list_std, min_idx
+
 
 def logreg_train(filename: str | Path) -> None:
     """
@@ -36,23 +39,23 @@ def logreg_train(filename: str | Path) -> None:
 
     houses = {"Gryffindor", "Slytherin", "Ravenclaw", "Hufflepuff"}
 
-    # 1 array / house / class 
-    grades = [ {
-        "Gryffindor": [],
-        "Slytherin": [],
-        "Ravenclaw": [],
-        "Hufflepuff": []
-    } for _ in classes]
+    # 1 array / house / class
+    grades = [
+        {"Gryffindor": [], "Slytherin": [], "Ravenclaw": [], "Hufflepuff": []}
+        for _ in classes
+    ]
 
     with open(filename, "r") as file:
         data = csv.DictReader(file)
         for row in data:
             house = row["Hogwarts House"]
-            if house not in houses: #if house not defined in row
+            if house not in houses:  # if house not defined in row
                 continue
             for classe, idx in classes.items():
                 value = row[classe]
-                grades[idx][house].append(float(value) if value else nan) # adds numpy.nan when no value
+                grades[idx][house].append(
+                    float(value) if value else nan
+                )  # adds numpy.nan when no value
 
     # ============================================================
     # STEP 3: NORMALIZE / STANDARDIZE FEATURES
@@ -118,6 +121,7 @@ def logreg_train(filename: str | Path) -> None:
     #       (so logreg_predict knows exactly which columns to extract, and in what order)
     #     - The list of house names IN THE ORDER of your weight vectors
     #       (so logreg_predict knows which weight vector belongs to which house)
+
 
 def main() -> None:
     parser = argparse.ArgumentParser(

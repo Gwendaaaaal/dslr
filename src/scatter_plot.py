@@ -1,10 +1,12 @@
-import csv
 import argparse
+import csv
 from pathlib import Path
+
 import matplotlib.pyplot as plt
 
+
 def scatter_plot(filename: str | Path) -> None:
-    
+
     classes = {
         "Arithmancy": 0,
         "Astronomy": 1,
@@ -21,21 +23,24 @@ def scatter_plot(filename: str | Path) -> None:
         "Flying": 12,
     }
 
-    houses = {"Gryffindor": "firebrick", "Slytherin": "green", "Ravenclaw": "royalblue", "Hufflepuff": "gold"}
+    houses = {
+        "Gryffindor": "firebrick",
+        "Slytherin": "green",
+        "Ravenclaw": "royalblue",
+        "Hufflepuff": "gold",
+    }
 
-    # 1 array / house / class 
-    grades = [ {
-        "Gryffindor": [],
-        "Slytherin": [],
-        "Ravenclaw": [],
-        "Hufflepuff": []
-    } for _ in classes]
+    # 1 array / house / class
+    grades = [
+        {"Gryffindor": [], "Slytherin": [], "Ravenclaw": [], "Hufflepuff": []}
+        for _ in classes
+    ]
 
     with open(filename, "r") as file:
         data = csv.DictReader(file)
         for row in data:
             house = row["Hogwarts House"]
-            if house not in houses: #if house not defined in row
+            if house not in houses:  # if house not defined in row
                 continue
             for classe, idx in classes.items():
                 value = row[classe]
@@ -57,9 +62,11 @@ def scatter_plot(filename: str | Path) -> None:
                 pairs.append((x, y))
         if not pairs:
             continue
-        x, y = zip(*pairs)  # it splits a list of (x, y) tuples back into two separate sequences.
-                            # ex: ((1, 2), (3, 4), (5, 6)) -> (1, 3, 5), (2, 4, 6)
-        ax.scatter(x, y, color=color, label=house, alpha = 0.25)
+        x, y = zip(
+            *pairs
+        )  # it splits a list of (x, y) tuples back into two separate sequences.
+        # ex: ((1, 2), (3, 4), (5, 6)) -> (1, 3, 5), (2, 4, 6)
+        ax.scatter(x, y, color=color, label=house, alpha=0.25)
 
     ax.set_xlabel(class_x)
     ax.set_ylabel(class_y)
