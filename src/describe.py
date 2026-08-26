@@ -1,10 +1,8 @@
 import csv
+import argparse
 from pathlib import Path
 
 from lib import first_quartile, list_std, list_sum, median, third_quartile
-
-PROJECT_ROOT = Path(__file__).resolve().parents[1]
-DATASET_PATH = PROJECT_ROOT / "datasets" / "dataset_train.csv"
 
 def describe(filename: str | Path) -> None:
     classes = {
@@ -77,6 +75,19 @@ def describe(filename: str | Path) -> None:
 
     print("")
 
+def main() -> None:
+    parser = argparse.ArgumentParser(
+        description="Display statistics for the numerical features of a dataset."
+    )
+    parser.add_argument(
+        "dataset",
+        type=Path,
+        help="Path to the CSV dataset",
+    )
+    args = parser.parse_args()
+
+    describe(args.dataset)
+
 
 if __name__ == "__main__":
-    describe(DATASET_PATH)
+    main()

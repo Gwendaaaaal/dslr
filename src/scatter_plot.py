@@ -1,9 +1,7 @@
 import csv
+import argparse
 from pathlib import Path
 import matplotlib.pyplot as plt
-
-PROJECT_ROOT = Path(__file__).resolve().parents[1]
-DATASET_PATH = PROJECT_ROOT / "datasets" / "dataset_train.csv"
 
 def scatter_plot(filename: str | Path) -> None:
     
@@ -71,5 +69,19 @@ def scatter_plot(filename: str | Path) -> None:
     return
 
 
+def main() -> None:
+    parser = argparse.ArgumentParser(
+        description="Display statistics for the numerical features of a dataset."
+    )
+    parser.add_argument(
+        "dataset",
+        type=Path,
+        help="Path to the CSV dataset",
+    )
+    args = parser.parse_args()
+
+    scatter_plot(args.dataset)
+
+
 if __name__ == "__main__":
-    scatter_plot(DATASET_PATH)
+    main()
