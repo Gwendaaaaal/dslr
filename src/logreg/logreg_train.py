@@ -5,7 +5,7 @@ from pathlib import Path
 import matplotlib.pyplot as plt
 from numpy import nan
 
-from lib import list_mean, list_std, min_idx
+from preprocessing import load_training_dataset, standardize_grades
 
 
 def logreg_train(filename: str | Path) -> None:
@@ -24,38 +24,9 @@ def logreg_train(filename: str | Path) -> None:
     #         Transfiguration, Potions, Charms, Flying, Astronomy)
     #     y = the "Hogwarts House" column (the labels)
 
-    classes = {
-        "Astronomy": 0,
-        "Herbology": 1,
-        "Defense Against the Dark Arts": 2,
-        "Divination": 3,
-        "Ancient Runes": 4,
-        "History of Magic": 5,
-        "Transfiguration": 6,
-        "Potions": 7,
-        "Charms": 8,
-        "Flying": 9,
-    }
-
-    houses = {"Gryffindor", "Slytherin", "Ravenclaw", "Hufflepuff"}
-
-    # 1 array / house / class
-    grades = [
-        {"Gryffindor": [], "Slytherin": [], "Ravenclaw": [], "Hufflepuff": []}
-        for _ in classes
-    ]
-
-    with open(filename, "r") as file:
-        data = csv.DictReader(file)
-        for row in data:
-            house = row["Hogwarts House"]
-            if house not in houses:  # if house not defined in row
-                continue
-            for classe, idx in classes.items():
-                value = row[classe]
-                grades[idx][house].append(
-                    float(value) if value else nan
-                )  # adds numpy.nan when no value
+    unprocessed_X: list[list[float]]
+    Y: list[str]
+    unprocessed_X, Y = load_training_dataset(filename)
 
     # ============================================================
     # STEP 3: NORMALIZE / STANDARDIZE FEATURES
@@ -63,9 +34,11 @@ def logreg_train(filename: str | Path) -> None:
     # - For each feature column, compute:
     #     mean = average of the column (on training data only)
     #     std  = standard deviation of the column (on training data only)
-    # - Store these mean/std values somewhere (you'll need them later
-    #   in logreg_predict AND you'll need to save them in your weights file)
+    # - Store these mean/std values somewhere ( needed in logreg_predict
+    #   AND needed to save them in weights file)
     # - Transform X: X_scaled = (X - mean) / std
+    X_scaled, means, stds = standardize_grades(unprocessed_X)
+    print(X_scaled)
 
     # ============================================================
     # STEP 4: PREPARE LABELS FOR ONE-VS-ALL
