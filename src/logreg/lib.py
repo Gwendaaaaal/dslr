@@ -1,4 +1,5 @@
 from math import sqrt
+import math
 from numpy import isnan, nan
 
 
@@ -63,3 +64,48 @@ def min_idx(L: list[float]) -> int:
             min = elem
             id = idx
     return id
+
+
+def sigmoid(Z: float) -> float:
+    """
+    - sigmoid(z) = 1 / (1 + exp(-z))
+    - This will turn the linear combination z into a probability
+    """
+
+    if Z >= 0:
+        return 1 / (1 + math.exp(-Z))
+
+    exp_z = math.exp(Z)
+    return exp_z / (1 + exp_z)
+
+
+def dot_product(
+    matrix: list[list[float]],
+    vector: list[float]
+) -> list[float]:
+    if len(matrix) == 0 or len(vector) != len(matrix[0]):
+        return []
+    Z: list[float] = [0.0 for elem in matrix]
+    for row_index, row in enumerate(matrix):
+        for idx, coef in enumerate(vector):
+            Z[row_index] += row[idx] * coef
+    return Z
+
+
+def transpose_matrix(
+    matrix: list[list[float]]
+) -> list[list[float]]:
+    """
+    Returns:
+        transposed version of given matrix
+        [3, 4, 5]       [3, 1]
+        [1, 2 ,6]   =>  [4, 2]
+                        [5, 6]
+    """
+    if not matrix:
+        return []
+    T: list[list[float]] = [[] for elem in matrix[0]]
+    for row in matrix:
+        for idx, elem in enumerate(row):
+            T[idx].append(elem)
+    return T

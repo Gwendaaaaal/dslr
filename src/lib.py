@@ -63,3 +63,11 @@ def min_idx(L: list[float]) -> int:
             min = elem
             id = idx
     return id
+
+def sigmoid(Z: float) -> float:
+    """
+    - sigmoid(z) = 1 / (1 + exp(-z))
+    - This will turn the linear combination z into a probability
+    """
+
+    return (1 / (1 + math.exp(-Z)))

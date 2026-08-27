@@ -5,7 +5,9 @@ from pathlib import Path
 import matplotlib.pyplot as plt
 from numpy import nan
 
-from preprocessing import load_training_dataset, standardize_grades
+from lib import sigmoid
+from gradient_descent import gradient_descent
+from preprocessing import add_1_column, fill_y_vectors, init_weights, load_training_dataset, standardize_grades
 
 
 def logreg_train(filename: str | Path) -> None:
@@ -37,8 +39,11 @@ def logreg_train(filename: str | Path) -> None:
     # - Store these mean/std values somewhere ( needed in logreg_predict
     #   AND needed to save them in weights file)
     # - Transform X: X_scaled = (X - mean) / std
+    X_scaled: list[list[float]]
+    means: list[float]
+    stds: list[float]
     X_scaled, means, stds = standardize_grades(unprocessed_X)
-    print(X_scaled)
+    #print(X_scaled)
 
     # ============================================================
     # STEP 4: PREPARE LABELS FOR ONE-VS-ALL
@@ -48,6 +53,9 @@ def logreg_train(filename: str | Path) -> None:
     #     y_house = 1 if student's house == this house, else 0
     # - You'll end up with 4 separate binary label vectors
     #   (Gryffindor vs rest, Slytherin vs rest, Ravenclaw vs rest, Hufflepuff vs rest)
+    
+    Y_slytherin, Y_ravenclaw, Y_gryffindor, Y_hufflepuff = fill_y_vectors(Y)
+    #print(Y_slytherin)
 
     # ============================================================
     # STEP 5: ADD BIAS TERM
@@ -55,24 +63,29 @@ def logreg_train(filename: str | Path) -> None:
     # - Add a column of 1s to X_scaled (this multiplies with w0, the bias)
     # - This lets you treat w0 like any other weight in your dot product
 
+    X_biased = add_1_column(X_scaled)
+    #print(X_biased)
+
     # ============================================================
     # STEP 6: INITIALIZE WEIGHTS
     # ============================================================
     # - For each of the 4 house models, initialize a weight vector
     #   (length = number of features + 1 for bias), e.g. all zeros
 
-    # ============================================================
-    # STEP 7: DEFINE SIGMOID FUNCTION
-    # ============================================================
-    # - sigmoid(z) = 1 / (1 + exp(-z))
-    # - This will turn your linear combination z into a probability
+    
+    W_slytherin, W_ravenclaw, W_gryffindor, W_hufflepuff = init_weights()
+
+    #print(W_slytherin, W_ravenclaw, W_gryffindor, W_hufflepuff)
+
+    #print(sigmoid(0))
+
 
     # ============================================================
     # STEP 8: GRADIENT DESCENT LOOP (repeat for EACH of the 4 houses)
     # ============================================================
     # For each house model:
     #   Repeat for a fixed number of iterations (or until convergence):
-    #     a. Compute z = X_scaled_with_bias . weights   (dot product)
+    #     a. Compute z = X_biased . weights   (dot product)
     #     b. Compute predictions: h = sigmoid(z)
     #     c. Compute the error: error = h - y_house
     #     d. Compute the gradient:
@@ -83,6 +96,11 @@ def logreg_train(filename: str | Path) -> None:
     #     f. (Optional but recommended) Compute and store the cost
     #        (log loss) at each iteration so you can plot it later
     #        and check that it's decreasing (sanity check for debugging)
+
+    gradient_descent(X_biased, Y_slytherin, W_slytherin)
+    gradient_descent(X_biased, Y_ravenclaw, W_ravenclaw)
+    gradient_descent(X_biased, Y_gryffindor, W_gryffindor)
+    gradient_descent(X_biased, Y_hufflepuff, W_hufflepuff)
 
     # ============================================================
     # STEP 9: SAVE RESULTS
